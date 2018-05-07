@@ -2,6 +2,8 @@
 
 cimport dada_hdu
 
+from .exceptions import PSRDadaError
+
 cdef extern from "<string.h>":
     char *strncpy(char *dest, const char *src, size_t n)
 
@@ -44,10 +46,10 @@ cdef class Writer:
         dada_hdu.dada_hdu_set_key(self._c_dada_hdu, self._key)
 
         if dada_hdu.dada_hdu_connect(self._c_dada_hdu) < 0:
-            raise "ERROR in dada_hdu_connect"
+            raise PSRDadaError("ERROR in dada_hdu_connect")
 
         if dada_hdu.dada_hdu_lock_write(self._c_dada_hdu) < 0:
-            raise "ERROR in dada_hdu_lock_write"
+            raise PSRDadaError("ERROR in dada_hdu_lock_write")
 
     def disconnect(self):
         """Disconnect from PRS DADA ringbuffer"""

@@ -3,6 +3,8 @@
 import re
 cimport dada_hdu
 
+from .exceptions import PSRDadaError
+
 cdef class Reader:
     cdef dada_hdu.key_t _key
     cdef dada_hdu.dada_hdu_t *_c_dada_hdu
@@ -26,10 +28,10 @@ cdef class Reader:
         dada_hdu.dada_hdu_set_key(self._c_dada_hdu, self._key)
 
         if dada_hdu.dada_hdu_connect(self._c_dada_hdu) < 0:
-            raise "ERROR in dada_hdu_connect"
+            raise PSRDadaError("ERROR in dada_hdu_connect")
 
         if dada_hdu.dada_hdu_lock_read(self._c_dada_hdu) < 0:
-            raise "ERROR in dada_hdu_lock_read"
+            raise PSRDadaError("ERROR in dada_hdu_lock_read")
 
     def getHeader(self):
         # read and parse the header
