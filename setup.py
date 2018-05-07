@@ -12,7 +12,11 @@ with open('VERSION') as version_file:
     project_version = version_file.read()
 
 extensions = [
-    Extension("psrdada", ["psrdada/reader.pyx", "psrdada/writer.pyx"],
+    Extension("psrdada.reader", ["psrdada/reader.pyx"],
+        include_dirs = ["/home/jiska/Code/AA/install/include"],
+        libraries = ["psrdada"],
+        library_dirs = ["/home/jiska/Code/AA/install/lib"]),
+    Extension("psrdada.writer", ["psrdada/writer.pyx"],
         include_dirs = ["/home/jiska/Code/AA/install/include"],
         libraries = ["psrdada"],
         library_dirs = ["/home/jiska/Code/AA/install/lib"]),

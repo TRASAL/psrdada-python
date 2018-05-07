@@ -22,6 +22,8 @@ cdef extern from "ipcbuf.h":
     char* ipcbuf_get_next_read (ipcbuf_t* ipcbuf, uint64_t* bytes)
     char* ipcbuf_get_next_write (ipcbuf_t* ipcbuf)
     uint64_t ipcbuf_get_bufsz (ipcbuf_t* ipcbuf)
+    int ipcbuf_mark_filled (ipcbuf_t* ipcbuf, uint64_t nbytes)
+    int ipcbuf_mark_cleared (ipcbuf_t* ipcbuf)
 
 cdef extern from "ipcio.h":
     ctypedef struct ipcio_t:
@@ -33,7 +35,7 @@ cdef extern from "dada_hdu.h":
         multilog_t* log
 
         # The Data Block interface
-        ipcio_t* data_block;
+        ipcio_t* data_block
 
         # The Header Block interface
         ipcbuf_t* header_block

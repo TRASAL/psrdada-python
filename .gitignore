@@ -1,1 +1,4 @@
 *.py[cod]
+psrdada/reader.c
+psrdada/writer.c
+dirs
