@@ -7,20 +7,20 @@ The code is inspired by the example code in the [cython userguide](http://cython
 
 Documentation
 -------------
-You could include a link to the full documentation of your project here.
+Work in progress.
 
 Installation
 ------------
 clone the repository  
-    `git clone git@github.com:jiskattema/psrdada_python.git`  
+    `git clone git@github.com:AA-ALERT/psrdada-python.git`
 change into the top-level directory  
-    `cd psrdada_python`  
+    `cd psrdada-python`  
 install using  
-    `pip install .`
+    `make && make install`
 
 Dependencies
 ------------
- * Python 2.7 or Python 3.5
+ * Python 3.5
 
 License
 -------
