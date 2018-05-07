@@ -12,6 +12,10 @@ with open('VERSION') as version_file:
     project_version = version_file.read()
 
 extensions = [
+    Extension("psrdada.ringbuffer", ["psrdada/ringbuffer.pyx"],
+        include_dirs = ["/home/jiska/Code/AA/install/include"],
+        libraries = ["psrdada"],
+        library_dirs = ["/home/jiska/Code/AA/install/lib"]),
     Extension("psrdada.reader", ["psrdada/reader.pyx"],
         include_dirs = ["/home/jiska/Code/AA/install/include"],
         libraries = ["psrdada"],
@@ -28,7 +32,7 @@ setup(
     long_description=readme + '\n\n',
     author="Jisk Attema",
     author_email='j.attema@esciencecenter.nl',
-    url='https://github.com/jiskattema/psrdada_python',
+    url='https://github.com/NLeSC/psrdada-python',
     packages=[
         'psrdada',
     ],

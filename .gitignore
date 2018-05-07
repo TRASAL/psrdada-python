@@ -1,4 +1,4 @@
 *.py[cod]
-psrdada/reader.c
-psrdada/writer.c
+psrdada/*.c
+psrdada/*.so
 dirs
