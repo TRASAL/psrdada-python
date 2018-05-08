@@ -6,3 +6,6 @@ install:
 
 test:
 	python -m unittest
+
+check:
+	prospector

@@ -1,4 +1,10 @@
 # file: reader.pyx
+"""
+Reader class.
+
+Implements reading header and data from an existing PSRDada ringbuffer.
+"""
+
 
 cimport dada_hdu
 from .ringbuffer cimport Ringbuffer
@@ -8,8 +14,14 @@ from .exceptions import PSRDadaError
 from .ringbuffer import Ringbuffer
 
 cdef class Reader(Ringbuffer):
+    """
+    Reader class.
+
+    Implements reading header and data from and existing PSRDada ringbuffer.
+    Extends the Ringbuffer class.
+    """
     def connect(self, key):
-        """Connect to a PSR DADA ringbuffer with the specified key"""
+        """Connect to a PSR DADA ringbuffer with the specified key, and lock it for reading"""
         super().connect(key)
 
         if dada_hdu.dada_hdu_lock_read(self._c_dada_hdu) < 0:
@@ -22,6 +34,7 @@ cdef class Reader(Ringbuffer):
         super().disconnect()
 
     def getHeader(self):
+        """Read header from the Ringbuffer"""
         # read and parse the header
         cdef dada_hdu.uint64_t bufsz
         cdef char * c_string = NULL

@@ -1,35 +1,48 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Setup script for the PSRDada python bindings.
 
+Build and install the package using distutils.
+"""
+
+# pylint: disable=all
+from Cython.Build import cythonize
 from setuptools import setup
 from distutils.extension import Extension
-from Cython.Build import cythonize
 
 with open('README.md') as readme_file:
-    readme = readme_file.read()
+    README = readme_file.read()
 
 with open('VERSION') as version_file:
-    project_version = version_file.read()
+    PROJECT_VERSION = version_file.read()
 
-extensions = [
-    Extension("psrdada.ringbuffer", ["psrdada/ringbuffer.pyx"],
-        include_dirs = ["/home/jiska/Code/AA/install/include"],
-        libraries = ["psrdada"],
-        library_dirs = ["/home/jiska/Code/AA/install/lib"]),
-    Extension("psrdada.reader", ["psrdada/reader.pyx"],
-        include_dirs = ["/home/jiska/Code/AA/install/include"],
-        libraries = ["psrdada"],
-        library_dirs = ["/home/jiska/Code/AA/install/lib"]),
-    Extension("psrdada.writer", ["psrdada/writer.pyx"],
-        include_dirs = ["/home/jiska/Code/AA/install/include"],
-        libraries = ["psrdada"],
-        library_dirs = ["/home/jiska/Code/AA/install/lib"]),
-    ]
+EXTENSIONS = [
+    Extension(
+        "psrdada.ringbuffer",
+        ["psrdada/ringbuffer.pyx"],
+        include_dirs=["/home/jiska/Code/AA/install/include"],
+        libraries=["psrdada"],
+        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+    Extension(
+        "psrdada.reader",
+        ["psrdada/reader.pyx"],
+        include_dirs=["/home/jiska/Code/AA/install/include"],
+        libraries=["psrdada"],
+        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+    Extension(
+        "psrdada.writer",
+        ["psrdada/writer.pyx"],
+        include_dirs=["/home/jiska/Code/AA/install/include"],
+        libraries=["psrdada"],
+        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+]
+
 setup(
     name='psrdada',
-    version=project_version,
+    version=PROJECT_VERSION,
     description="Python3 bindings to the ringbuffer implementation in PSRDada",
-    long_description=readme + '\n\n',
+    long_description=README + '\n\n',
     author="Jisk Attema",
     author_email='j.attema@esciencecenter.nl',
     url='https://github.com/NLeSC/psrdada-python',
@@ -53,5 +66,5 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    ext_modules = cythonize(extensions),
+    ext_modules=cythonize(EXTENSIONS),
 )
