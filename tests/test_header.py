@@ -14,11 +14,18 @@ import unittest
 from psrdada import Reader
 from psrdada import Writer
 
-class TestReadWriteData(unittest.TestCase):
-    """
-    Test for reading and writing header data
+HEADER_TEST_DATA = {
+    'hello': 'world',
+    'PSRDada': 'testsuite'
+}
 
-    Start a ringbuffer instance and write some data to the header block, then read it back.
+
+class TestReadWriteHeader(unittest.TestCase):
+    """
+    Test for reading and writing header data.
+
+    Start a ringbuffer instance and write some data to the header block,
+    then read it back.
     """
 
     def setUp(self):

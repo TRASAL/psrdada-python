@@ -16,7 +16,7 @@ from psrdada import Reader
 from psrdada import Writer
 
 
-class TestReadWriteHeader(unittest.TestCase):
+class TestReadWriteData(unittest.TestCase):
     """
     Test for reading and writing data.
 
