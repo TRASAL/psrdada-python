@@ -34,6 +34,13 @@ cdef class Reader(Ringbuffer):
 
     def disconnect(self):
         """Disconnect from PRS DADA ringbuffer"""
+
+        # if we are still holding a page, mark it cleared
+        cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
+        if self.isHoldingPage:
+            dada_hdu.ipcbuf_mark_cleared (ipcbuf)
+            self.isHoldingPage = False
+
         dada_hdu.dada_hdu_unlock_read(self._c_dada_hdu)
 
         super().disconnect()
@@ -62,7 +69,24 @@ cdef class Reader(Ringbuffer):
 
     def getNextPage(self):
         """Return a memoryview on the next available ringbuffer page"""
+
+        self.markCleared()
+
+        cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
+        cdef char * c_page = dada_hdu.ipcbuf_get_next_read (ipcbuf, &self._bufsz)
+        self.isHoldingPage = True
+
+        return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
+
+    def markCleared(self):
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
 
-        cdef char * c_page = dada_hdu.ipcbuf_get_next_read (ipcbuf, &self._bufsz)
-        return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
+        if self.isHoldingPage:
+            dada_hdu.ipcbuf_mark_cleared (ipcbuf)
+            self.isHoldingPage = False
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.getNextPage()

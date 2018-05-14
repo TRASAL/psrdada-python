@@ -18,6 +18,8 @@ cdef class Ringbuffer:
 
     def connect(self, key):
         """Connect to a PSR DADA ringbuffer with the specified key"""
+        if self.isConnected:
+            raise PSRDadaError("Ringbuffer has already been connected")
 
         # store parameters on the Reader object
         self._key = key

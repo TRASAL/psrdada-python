@@ -61,13 +61,24 @@ cdef class Writer(Ringbuffer):
 
     def getNextPage(self):
         """Return a memoryview on the next available ringbuffer page"""
+        self.markFilled()
+
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
-
         cdef char * c_page = dada_hdu.ipcbuf_get_next_write (ipcbuf)
-        self._bufsz = dada_hdu.ipcbuf_get_bufsz(ipcbuf)
+        self.isHoldingPage = True
 
+        self._bufsz = dada_hdu.ipcbuf_get_bufsz(ipcbuf)
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_WRITE)
 
     def markFilled(self):
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
-        dada_hdu.ipcbuf_mark_filled (ipcbuf, self._bufsz)
+
+        if self.isHoldingPage:
+            dada_hdu.ipcbuf_mark_filled (ipcbuf, self._bufsz)
+            self.isHoldingPage = False
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.getNextPage()
