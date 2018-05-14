@@ -38,6 +38,18 @@ cdef class Writer(Ringbuffer):
 
         super().disconnect()
 
+    def markEndOfData(self):
+        if not self.isConnected:
+            raise PSRDadaError("Error in setEndOfData: not connected")
+
+        if not self.isHoldingPage:
+            raise PSRDadaError("Error in setEndOfData: not writing")
+
+        if dada_hdu.ipcbuf_enable_eod(<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block) < 0:
+            raise PSRDadaError("Error in setEndOfData: cannot mark end of data")
+
+        self.isEndOfData = True
+
     def setHeader(self, header):
         """Write header to the Ringbuffer"""
         cdef char * c_string = dada_hdu.ipcbuf_get_next_write (self._c_dada_hdu.header_block)
@@ -61,7 +73,9 @@ cdef class Writer(Ringbuffer):
 
     def getNextPage(self):
         """Return a memoryview on the next available ringbuffer page"""
-        self.markFilled()
+
+        if self.isHoldingPage:
+            raise PSRDadaError("Error in getNextPage: previous page not cleared.")
 
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
         cdef char * c_page = dada_hdu.ipcbuf_get_next_write (ipcbuf)
@@ -71,14 +85,18 @@ cdef class Writer(Ringbuffer):
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_WRITE)
 
     def markFilled(self):
-        cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
-
         if self.isHoldingPage:
-            dada_hdu.ipcbuf_mark_filled (ipcbuf, self._bufsz)
-            self.isHoldingPage = False
+            dada_hdu.ipcbuf_mark_filled (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block, self._bufsz)
+
+        self.isHoldingPage = False
 
     def __iter__(self):
         return self
 
     def __next__(self):
+        self.markFilled()
+
+        if self.isEndOfData:
+            raise StopIteration
+
         return self.getNextPage()

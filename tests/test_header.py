@@ -30,7 +30,7 @@ class TestReadWriteHeader(unittest.TestCase):
 
     def setUp(self):
         """Test setup."""
-        os.system("dada_db -d ; dada_db")
+        os.system("dada_db -d 2> /dev/null ; dada_db -k dada")
 
         self.writer = Writer()
         self.writer.connect(0xdada)
@@ -42,6 +42,8 @@ class TestReadWriteHeader(unittest.TestCase):
         """Test teardown."""
         self.writer.disconnect()
         self.reader.disconnect()
+
+        os.system("dada_db -d -k dada 2> /dev/null")
 
     def test_writing_header(self):
         """

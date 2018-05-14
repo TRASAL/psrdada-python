@@ -30,6 +30,7 @@ cdef class Ringbuffer:
             raise PSRDadaError("ERROR in dada_hdu_connect")
 
         self.isConnected = True
+        self.isHoldingPage = False
 
     def disconnect(self):
         """Disconnect from PRS DADA ringbuffer"""

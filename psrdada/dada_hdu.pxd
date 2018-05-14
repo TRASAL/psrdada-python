@@ -24,6 +24,8 @@ cdef extern from "ipcbuf.h":
     uint64_t ipcbuf_get_bufsz (ipcbuf_t* ipcbuf)
     int ipcbuf_mark_filled (ipcbuf_t* ipcbuf, uint64_t nbytes)
     int ipcbuf_mark_cleared (ipcbuf_t* ipcbuf)
+    int ipcbuf_enable_eod (ipcbuf_t*)
+    int ipcbuf_eod (ipcbuf_t*)
 
 cdef extern from "ipcio.h":
     ctypedef struct ipcio_t:

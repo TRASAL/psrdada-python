@@ -70,23 +70,28 @@ cdef class Reader(Ringbuffer):
     def getNextPage(self):
         """Return a memoryview on the next available ringbuffer page"""
 
-        self.markCleared()
+        if self.isHoldingPage:
+            raise PSRDadaError("Error in getNextPage: previous page not cleared.")
 
-        cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
-        cdef char * c_page = dada_hdu.ipcbuf_get_next_read (ipcbuf, &self._bufsz)
+        cdef char * c_page = dada_hdu.ipcbuf_get_next_read (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block, &self._bufsz)
         self.isHoldingPage = True
 
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
 
     def markCleared(self):
-        cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
-
         if self.isHoldingPage:
-            dada_hdu.ipcbuf_mark_cleared (ipcbuf)
-            self.isHoldingPage = False
+            dada_hdu.ipcbuf_mark_cleared (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
+
+        self.isHoldingPage = False
+        self.isEndOfData = dada_hdu.ipcbuf_eod (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
 
     def __iter__(self):
         return self
 
     def __next__(self):
+        self.markCleared()
+
+        if self.isEndOfData:
+            raise StopIteration
+
         return self.getNextPage()
