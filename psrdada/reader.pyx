@@ -33,7 +33,7 @@ cdef class Reader(Ringbuffer):
             raise PSRDadaError("ERROR in dada_hdu_lock_read")
 
     def disconnect(self):
-        """Disconnect from PRS DADA ringbuffer"""
+        """Disconnect from PSR DADA ringbuffer"""
 
         # if we are still holding a page, mark it cleared
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
