@@ -6,10 +6,12 @@ from psrdada import Reader
 reader = Reader()
 
 # Connect to a running ringbuffer with key 'dada'
-reader.connect('dada')
+reader.connect(0xdada)
 
 # loop over the pages
 for page in reader:
     # read the page as numpy array
     data = np.asarry(page)
     print (np.sum(data))
+
+reader.disconnect()
