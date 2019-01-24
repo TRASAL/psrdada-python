@@ -25,6 +25,10 @@ cdef class Reader(Ringbuffer):
     Implements reading header and data from and existing PSRDada ringbuffer.
     Extends the Ringbuffer class.
     """
+    def __init__(self):
+        self.isEndOfData = False
+        self.isHoldingPage = False
+
     def connect(self, key):
         """Connect to a PSR DADA ringbuffer with the specified key, and lock it for reading"""
         super().connect(key)
