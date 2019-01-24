@@ -32,6 +32,8 @@ cdef class Reader(Ringbuffer):
         if dada_hdu.dada_hdu_lock_read(self._c_dada_hdu) < 0:
             raise PSRDadaError("ERROR in dada_hdu_lock_read")
 
+        self.isEndOfData = dada_hdu.ipcbuf_eod (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
+
     def disconnect(self):
         """Disconnect from PSR DADA ringbuffer"""
 
@@ -79,6 +81,8 @@ cdef class Reader(Ringbuffer):
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
 
     def markCleared(self):
+        """Mark the current page as cleared, so it can be reused by the ringbuffer.
+        This is called automatically when iterating over the ringbuffer."""
         if self.isHoldingPage:
             dada_hdu.ipcbuf_mark_cleared (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
 
