@@ -13,7 +13,7 @@ while not reader.isEndOfData:
     # read the page as numpy array
     page = reader.getNextPage()
 
-    data = np.asarry(page)
+    data = np.asarray(page)
     print (np.sum(data))
 
     reader.markCleared()

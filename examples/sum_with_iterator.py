@@ -11,7 +11,7 @@ reader.connect(0xdada)
 # loop over the pages
 for page in reader:
     # read the page as numpy array
-    data = np.asarry(page)
+    data = np.asarray(page)
     print (np.sum(data))
 
 reader.disconnect()
