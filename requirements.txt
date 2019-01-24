@@ -1,1 +1,3 @@
 prospector[with_pyroma]
+numpy
+cython

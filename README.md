@@ -21,6 +21,8 @@ install using
 Dependencies
 ------------
  * Python 3.5
+ * PSRDada dada\_db exectuable in the PATH
+ * PSRDada libpsrdada.so in LD\_LIBRARY\_PATH
 
 License
 -------
