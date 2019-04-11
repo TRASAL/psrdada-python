@@ -15,6 +15,7 @@ clone the repository
     `git clone git@github.com:AA-ALERT/psrdada-python.git`
 change into the top-level directory  
     `cd psrdada-python`  
+set the correct paths for psrdada in setup.py
 install using  
     `make && make install`
 

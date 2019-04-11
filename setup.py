@@ -17,25 +17,29 @@ with open('README.md') as readme_file:
 with open('VERSION') as version_file:
     PROJECT_VERSION = version_file.read()
 
+PSRDADA_LIBDIR = "/usr/lib"
+PSRDADA_LIBS = "psrdada"
+PSRDADA_INCLUDE = "/usr/include"
+
 EXTENSIONS = [
     Extension(
         "psrdada.ringbuffer",
         ["psrdada/ringbuffer.pyx"],
-        include_dirs=["/home/jiska/Code/AA/install/include"],
-        libraries=["psrdada"],
-        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+        include_dirs=[PSRDADA_INCLUDE],
+        libraries=[PSRDADA_LIBS],
+        library_dirs=[PSRDADA_LIBDIR]),
     Extension(
         "psrdada.reader",
         ["psrdada/reader.pyx"],
-        include_dirs=["/home/jiska/Code/AA/install/include"],
-        libraries=["psrdada"],
-        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+        include_dirs=[PSRDADA_INCLUDE],
+        libraries=[PSRDADA_LIBS],
+        library_dirs=[PSRDADA_LIBDIR]),
     Extension(
         "psrdada.writer",
         ["psrdada/writer.pyx"],
-        include_dirs=["/home/jiska/Code/AA/install/include"],
-        libraries=["psrdada"],
-        library_dirs=["/home/jiska/Code/AA/install/lib"]),
+        include_dirs=[PSRDADA_INCLUDE],
+        libraries=[PSRDADA_LIBS],
+        library_dirs=[PSRDADA_LIBDIR]),
 ]
 
 setup(
