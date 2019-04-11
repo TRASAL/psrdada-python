@@ -24,6 +24,8 @@ Dependencies
  * PSRDada dada\_db exectuable in the PATH
  * PSRDada libpsrdada.so in LD\_LIBRARY\_PATH
 
+Note: see the `make_libpsrdada.sh` script on how to get that library
+
 License
 -------
 Copyright (c) 2018, Jisk Attema
