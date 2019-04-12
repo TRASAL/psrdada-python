@@ -17,30 +17,17 @@ with open('README.md') as readme_file:
 with open('VERSION') as version_file:
     PROJECT_VERSION = version_file.read()
 
-PSRDADA_LIBDIR = "/usr/lib"
-PSRDADA_LIBS = "psrdada"
-PSRDADA_INCLUDE = "/usr/include"
-
 EXTENSIONS = [
     Extension(
         "psrdada.ringbuffer",
-        ["psrdada/ringbuffer.pyx"],
-        include_dirs=[PSRDADA_INCLUDE],
-        libraries=[PSRDADA_LIBS],
-        library_dirs=[PSRDADA_LIBDIR]),
+        ["psrdada/ringbuffer.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
     Extension(
         "psrdada.reader",
-        ["psrdada/reader.pyx"],
-        include_dirs=[PSRDADA_INCLUDE],
-        libraries=[PSRDADA_LIBS],
-        library_dirs=[PSRDADA_LIBDIR]),
+        ["psrdada/reader.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
     Extension(
         "psrdada.writer",
-        ["psrdada/writer.pyx"],
-        include_dirs=[PSRDADA_INCLUDE],
-        libraries=[PSRDADA_LIBS],
-        library_dirs=[PSRDADA_LIBDIR]),
-]
+        ["psrdada/writer.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
+    ]
 
 setup(
     name='psrdada',
@@ -50,11 +37,8 @@ setup(
     author="Jisk Attema",
     author_email='j.attema@esciencecenter.nl',
     url='https://github.com/NLeSC/psrdada-python',
-    packages=[
-        'psrdada',
-    ],
-    package_dir={'psrdada':
-                 'psrdada'},
+    packages=['psrdada',],
+    package_dir={'psrdada': 'psrdada'},
     include_package_data=True,
     license="Apache Software License 2.0",
     zip_safe=False,
