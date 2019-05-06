@@ -7,6 +7,14 @@ It allows you to connect to a ringbuffer, read header info, and read/write ringb
 This is a proof-of-concept implementation, only functions from PSRDADA immediately necessary for my project will be implemented.
 The code is inspired by the example code in the [cython userguide](http://cython.readthedocs.io/en/latest/src/userguide/buffer.html)
 
+Error messages, together with a start-up and shutdown message, are written to the syslog.
+Depending on your OS, you can read those using:
+
+```bash
+ $ grep psrdada-python /var/log/syslog
+ $ journalctl --since "10 minutes ago" | grep psrdada-python
+```
+
 Documentation
 -------------
 See the two scripts in the examples directory, and the tests.

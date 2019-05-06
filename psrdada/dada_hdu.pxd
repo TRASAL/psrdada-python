@@ -15,6 +15,11 @@ cdef extern from "multilog.h":
     ctypedef struct multilog_t:
         pass
 
+    multilog_t* multilog_open(const char* program_name, char syslog)
+    int multilog_close(multilog_t* m)
+    int multilog (multilog_t* m, int priority, const char* format, ...)
+    # int multilog_add(multilog* m, FILE* fptr)
+
 cdef extern from "ipcbuf.h":
     ctypedef struct ipcbuf_t:
         pass
