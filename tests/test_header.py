@@ -57,5 +57,6 @@ class TestReadWriteHeader(unittest.TestCase):
 
         self.assertDictEqual(header, HEADER_TEST_DATA)
 
+
 if __name__ == '__main__':
     sys.exit(unittest.main())

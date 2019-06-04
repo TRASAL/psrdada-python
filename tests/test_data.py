@@ -112,5 +112,6 @@ class TestReadWriteDataIterator(unittest.TestCase):
             # compare the written and read data
             self.assertTrue((data == TEST_DATA).all())
 
+
 if __name__ == '__main__':
     sys.exit(unittest.main())
