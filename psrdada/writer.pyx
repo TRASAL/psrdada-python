@@ -64,8 +64,12 @@ cdef class Writer(Ringbuffer):
             # keep a copy for the Writer class
             self.header[key] = header[key]
 
-        # join lines on newline, convert to ascii bytes
-        py_string = '\n'.join(lines).encode('ascii')
+        if len(header) > 0:
+            # join lines on newline, convert to ascii bytes
+            # and add a final newline
+            py_string = ('\n'.join(lines) + '\n').encode('ascii')
+        else:
+            py_string = ''.encode('ascii')
 
         # copy to the header page and done
         strncpy(c_string, py_string, bufsz)

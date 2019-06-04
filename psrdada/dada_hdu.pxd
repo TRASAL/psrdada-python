@@ -31,6 +31,7 @@ cdef extern from "ipcbuf.h":
     int ipcbuf_mark_cleared (ipcbuf_t* ipcbuf)
     int ipcbuf_enable_eod (ipcbuf_t*)
     int ipcbuf_eod (ipcbuf_t*)
+    int ipcbuf_reset (ipcbuf_t*)
 
 cdef extern from "ipcio.h":
     ctypedef struct ipcio_t:

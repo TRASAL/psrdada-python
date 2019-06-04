@@ -93,13 +93,20 @@ cdef class Reader(Ringbuffer):
         self.isHoldingPage = False
         self.isEndOfData = dada_hdu.ipcbuf_eod (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
 
+        if self.isEndOfData:
+            # this is necessary to be able to restart reading later
+            dada_hdu.ipcbuf_reset(<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
+
     def __iter__(self):
         return self
 
     def __next__(self):
+        # when not using iterators, the user shoud issue markCleared(), 
+        # and reset the isEndOfData flag at the right moment.
         self.markCleared()
 
         if self.isEndOfData:
+            self.isEndOfData = False
             raise StopIteration
 
         return self.getNextPage()
