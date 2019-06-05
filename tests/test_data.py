@@ -56,7 +56,6 @@ class TestReadWriteData(unittest.TestCase):
         data = np.asarray(page)
         data[...] = TEST_DATA[...]
         self.writer.markEndOfData()
-        self.writer.markFilled()
 
         page = self.reader.getNextPage()
         data = np.asarray(page)
@@ -104,13 +103,13 @@ class TestReadWriteDataIterator(unittest.TestCase):
             data[...] = TEST_DATA[...]
             self.writer.markEndOfData()
 
-        # get a page from the reader
+        # get a page from the reader, there's only one
         for page in self.reader:
             # test the Iterator interface for the reader class
             data = np.asarray(page)
 
-            # compare the written and read data
-            self.assertTrue((data == TEST_DATA).all())
+        # compare the written and read data
+        self.assertTrue((data == TEST_DATA).all())
 
 
 if __name__ == '__main__':

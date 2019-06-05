@@ -34,7 +34,8 @@ cdef class Writer(Ringbuffer):
 
     def disconnect(self):
         """Disconnect from PSR DADA ringbuffer"""
-        dada_hdu.dada_hdu_unlock_write(self._c_dada_hdu)
+        if not self.isEndOfData:
+            dada_hdu.dada_hdu_unlock_write(self._c_dada_hdu)
 
         super().disconnect()
 
@@ -49,11 +50,26 @@ cdef class Writer(Ringbuffer):
             raise PSRDadaError("Error in setEndOfData: cannot mark end of data")
 
         self.isEndOfData = True
+        self.markFilled()
+
+        # like dada_dbevent, unlock to ensure EOD is written
+        dada_hdu.dada_hdu_unlock_write(self._c_dada_hdu)
 
     def setHeader(self, header):
         """Write header to the Ringbuffer"""
+        # when sending a header, assume we will also send data later
+        # this also simplifies sending multiple dataset
+        if self.isEndOfData:
+            # recover from a previous EOD signal
+            dada_hdu.dada_hdu_lock_write(self._c_dada_hdu)
+            dada_hdu.ipcbuf_reset(<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
+            self.isEndOfData = False
+
         cdef char * c_string = dada_hdu.ipcbuf_get_next_write (self._c_dada_hdu.header_block)
         bufsz = dada_hdu.ipcbuf_get_bufsz(self._c_dada_hdu.header_block)
+
+        # remove all keys from the old header (if present)
+        self.header = dict()
 
         lines = []
         for key in header:
@@ -73,10 +89,16 @@ cdef class Writer(Ringbuffer):
 
         # copy to the header page and done
         strncpy(c_string, py_string, bufsz)
-        dada_hdu.ipcbuf_mark_filled (self._c_dada_hdu.header_block, len(py_string))
+        dada_hdu.ipcbuf_mark_filled(self._c_dada_hdu.header_block, len(py_string))
 
     def getNextPage(self):
         """Return a memoryview on the next available ringbuffer page"""
+
+        if self.isEndOfData:
+            # recover from a previous EOD signal
+            dada_hdu.dada_hdu_lock_write(self._c_dada_hdu)
+            dada_hdu.ipcbuf_reset(<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
+            self.isEndOfData = False
 
         if self.isHoldingPage:
             raise PSRDadaError("Error in getNextPage: previous page not cleared.")

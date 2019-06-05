@@ -55,6 +55,7 @@ class TestReadWriteHeader(unittest.TestCase):
         self.writer.setHeader(HEADER_TEST_DATA)
         header = self.reader.getHeader()
 
+        del header['__RAW_HEADER__']
         self.assertDictEqual(header, HEADER_TEST_DATA)
 
 

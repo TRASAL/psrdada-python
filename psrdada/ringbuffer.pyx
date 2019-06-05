@@ -5,8 +5,6 @@ cimport dada_hdu
 from .exceptions import PSRDadaError
 
 cdef class Ringbuffer:
-    header = {}
-
     def __cinit__(self):
         self._multilog = dada_hdu.multilog_open("psrdada-python", 1)
         dada_hdu.multilog(self._multilog, 1, "psrdada-python starting")
@@ -14,6 +12,7 @@ cdef class Ringbuffer:
 
         self._c_dada_hdu = dada_hdu.dada_hdu_create(self._multilog)
         self._key = 0xdada
+        self.header = dict()
 
     def __dealloc__(self):
         dada_hdu.multilog(self._multilog, 1, "psrdada-python shutting down")

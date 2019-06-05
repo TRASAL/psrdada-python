@@ -57,10 +57,22 @@ cdef class Reader(Ringbuffer):
         cdef dada_hdu.uint64_t bufsz
         cdef char * c_string = NULL
 
-        c_string = dada_hdu.ipcbuf_get_next_read (self._c_dada_hdu.header_block, &bufsz)
-        py_string = c_string[:bufsz].decode('ascii')
+        c_string = NULL
+        while c_string == NULL:
+            c_string = dada_hdu.ipcbuf_get_next_read(self._c_dada_hdu.header_block, &bufsz)
+            if not bufsz:
+                dada_hdu.ipcbuf_mark_cleared (self._c_dada_hdu.header_block)
 
+                isEndOfHeaderData = dada_hdu.ipcbuf_eod (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.header_block)
+                if isEndOfHeaderData:
+                    dada_hdu.ipcbuf_reset(<dada_hdu.ipcbuf_t *> self._c_dada_hdu.header_block)
+
+        py_string = c_string[:bufsz].decode('ascii')
         dada_hdu.ipcbuf_mark_cleared (self._c_dada_hdu.header_block)
+
+        # remove all keys from the old header (if present)
+        self.header = dict()
+        self.header['__RAW_HEADER__'] = py_string
 
         # split lines on newline and backslash
         lines = re.split('\n|\\\\', py_string)
@@ -80,6 +92,9 @@ cdef class Reader(Ringbuffer):
             raise PSRDadaError("Error in getNextPage: previous page not cleared.")
 
         cdef char * c_page = dada_hdu.ipcbuf_get_next_read (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block, &self._bufsz)
+        if c_page == NULL:
+            raise PSRDadaError("Error in getNextPage: NULL page read")
+
         self.isHoldingPage = True
 
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
