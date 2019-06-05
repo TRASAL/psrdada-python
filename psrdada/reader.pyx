@@ -2,9 +2,8 @@
 """
 Reader class.
 
-Implements reading header and data from an existing PSRDada ringbuffer.
+Implements reading header and data from a running PSRDada ringbuffer.
 """
-
 from cpython.buffer cimport PyBUF_READ
 cimport dada_hdu
 from .ringbuffer cimport Ringbuffer
@@ -22,15 +21,18 @@ cdef class Reader(Ringbuffer):
     """
     Reader class.
 
-    Implements reading header and data from and existing PSRDada ringbuffer.
-    Extends the Ringbuffer class.
+    Implements reading header and data from a running PSRDada ringbuffer.
     """
     def __init__(self):
         self.isEndOfData = False
         self.isHoldingPage = False
 
     def connect(self, key):
-        """Connect to a PSR DADA ringbuffer with the specified key, and lock it for reading"""
+        """
+        Connect to a PSRDada ringbuffer with the specified key, and lock it for reading.
+
+        :param key: Identifier of the ringbuffer, typically 0xdada
+        """
         super().connect(key)
 
         if dada_hdu.dada_hdu_lock_read(self._c_dada_hdu) < 0:
@@ -39,7 +41,7 @@ cdef class Reader(Ringbuffer):
         self.isEndOfData = dada_hdu.ipcbuf_eod (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
 
     def disconnect(self):
-        """Disconnect from PSR DADA ringbuffer"""
+        """Disconnect from the PSRDada ringbuffer"""
 
         # if we are still holding a page, mark it cleared
         cdef dada_hdu.ipcbuf_t *ipcbuf = <dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block
@@ -52,7 +54,23 @@ cdef class Reader(Ringbuffer):
         super().disconnect()
 
     def getHeader(self):
-        """Read header from the Ringbuffer"""
+        """
+        Read a header from the ringbuffer and return it as a dict.
+
+        We reimplement the parsing logic from the PSRDada code:
+         * A page is read from the PSRDada header block, and parsed line by line.
+           The page must contain ASCII text.
+         * Each line (separated by newlines or backslashes) contains a
+           key-value pair (separated by tabs or spaces).
+
+        The original header is also added to the dict using the special key *__RAW_HEADER__*
+        The read is blocking; it will wait for a header page to become available.
+        If EndOfData has been set on the buffer, it is cleared and the buffer is reset.
+
+        .. note:: The last-read header is available as *reader.header*.
+
+        :returns: A dict
+        """
         # read and parse the header
         cdef dada_hdu.uint64_t bufsz
         cdef char * c_string = NULL
@@ -86,7 +104,16 @@ cdef class Reader(Ringbuffer):
         return self.header
 
     def getNextPage(self):
-        """Return a memoryview on the next available ringbuffer page"""
+        """
+        Return a memoryview on the next available ringbuffer page.
+
+        The read is blocking; it will wait for a page to become available.
+
+        .. note:: The view is readonly, and a direct mapping of the ringbuffer page.
+                  So, no memory copies, and no garbage collector.
+
+        :returns: a PyMemoryView
+        """
 
         if self.isHoldingPage:
             raise PSRDadaError("Error in getNextPage: previous page not cleared.")
@@ -100,8 +127,12 @@ cdef class Reader(Ringbuffer):
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_READ)
 
     def markCleared(self):
-        """Mark the current page as cleared, so it can be reused by the ringbuffer.
-        This is called automatically when iterating over the ringbuffer."""
+        """
+        Release a page back to the ringbuffer.
+
+        Mark the current page as cleared, so it can be reused by the ringbuffer.
+        This is called automatically when iterating over the ringbuffer.
+        """
         if self.isHoldingPage:
             dada_hdu.ipcbuf_mark_cleared (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block)
 
@@ -116,7 +147,7 @@ cdef class Reader(Ringbuffer):
         return self
 
     def __next__(self):
-        # when not using iterators, the user shoud issue markCleared(), 
+        # when not using iterators, the user shoud issue markCleared(),
         # and reset the isEndOfData flag at the right moment.
         self.markCleared()
 

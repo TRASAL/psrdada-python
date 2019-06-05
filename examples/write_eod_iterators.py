@@ -39,7 +39,8 @@ for ndataset in range(10):
         data.fill(npage)
         npage += 1
 
-        # at the last iteration, mark the page as the last one
+        # at the last iteration, mark the page with EOD;
+        # this will also raise a StopIteration exception
         if npage == npages:
             writer.markEndOfData()
         else:

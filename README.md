@@ -1,5 +1,4 @@
-PSRDada Python
-===============================
+# PSRDada Python
 Python3 bindings to the ringbuffer implementation in [PSRDada](http://psrdada.sourceforge.net/)
 
 It allows you to connect to a ringbuffer, read header info, and read/write ringbuffer pages as numpy arrays.
@@ -17,8 +16,7 @@ Depending on your OS, you can read those using:
  $ journalctl --since "10 minutes ago" | grep psrdada-python
 ```
 
-Documentation
--------------
+# Documentation
 See the two scripts in the examples directory, and the tests.
 
 ```python
@@ -41,29 +39,31 @@ for page in reader:
 reader.disconnect()
 ```
 
-Installation
-------------
+# Installation
 clone the repository  
     `git clone git@github.com:AA-ALERT/psrdada-python.git`
 change into the top-level directory  
     `cd psrdada-python`  
-install using  
-    `make && make install`
+install the dependencies (in a virtual env)
+    `python -m venv env && . env/bin/activate && pip install -f requirements.txt`
+build the package
+    `make && make test && make install`
 
-Dependencies
-------------
- * Python 3.5
- * PSRDada dada\_db exectuable in the PATH
+# Dependencies
 
-License
--------
+PSRDada dada\_db exectuable in the PATH; see their [website](https://sourceforge.net)
+
+# License
 Copyright (c) 2018, Jisk Attema
+Apache Software License 2.0.
 
-Apache Software License 2.0
+This packages contains some files from the PSRDada project; a different license could apply.
+See the file *LICENSE.md* from details.
 
-Contributing
-------------
+# Contributing
+
+All contributions are welcome!
+Please use the github issue tracker to get in touch.
+
 Contributing authors so far:
 * Jisk Attema
-
-

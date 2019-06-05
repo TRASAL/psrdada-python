@@ -2,7 +2,7 @@
 """
 Writer class.
 
-Implements writing header and data to an existing PSRDada ringbuffer.
+Implements writing header and data from a running PSRDada ringbuffer.
 """
 
 from cpython.buffer cimport PyBUF_WRITE
@@ -23,23 +23,35 @@ cdef class Writer(Ringbuffer):
     """
     Writer class.
 
-    Implements writing header and data to an existing PSRDada ringbuffer.
+    Implements writing header and data to a running PSRDada ringbuffer.
     """
     def connect(self, key):
-        """Connect to a PSR DADA ringbuffer with the specified key, and lock it for writing"""
+        """
+        Connect to a PSR DADA ringbuffer with the specified key, and lock it for writing
+
+        :param key: Identifier of the ringbuffer, typically 0xdada
+        """
         super().connect(key)
 
         if dada_hdu.dada_hdu_lock_write(self._c_dada_hdu) < 0:
             raise PSRDadaError("ERROR in dada_hdu_lock_write")
 
     def disconnect(self):
-        """Disconnect from PSR DADA ringbuffer"""
+        """Disconnect from PSRDada ringbuffer"""
         if not self.isEndOfData:
             dada_hdu.dada_hdu_unlock_write(self._c_dada_hdu)
 
         super().disconnect()
 
     def markEndOfData(self):
+        """
+        Set the EOD (end-of-data) flag, and mark the page as filled.
+
+        .. note :: This will also raise a StopIteration exception when using
+                   iterators.
+
+        .. seealso:: markFilled
+        """
         if not self.isConnected:
             raise PSRDadaError("Error in setEndOfData: not connected")
 
@@ -56,7 +68,22 @@ cdef class Writer(Ringbuffer):
         dada_hdu.dada_hdu_unlock_write(self._c_dada_hdu)
 
     def setHeader(self, header):
-        """Write header to the Ringbuffer"""
+        """
+        Write a dict to a ringbuffer header page.
+
+        We reimplement the parsing logic from the PSRDada code:
+         * Each key-value pair in the dict is formatted as an ASCII string,
+           using a ' ' as separator;
+         * All strings are concattenated (with an additional newline)
+           and written to the header page.
+
+        The write is blocking; it will wait for a header page to become available.
+        If EndOfData has been set on the buffer, it is cleared and the buffer is reset.
+
+        .. note:: The last-written header is available as *writer.header*.
+
+        :returns: A dict
+        """
         # when sending a header, assume we will also send data later
         # this also simplifies sending multiple dataset
         if self.isEndOfData:
@@ -92,8 +119,16 @@ cdef class Writer(Ringbuffer):
         dada_hdu.ipcbuf_mark_filled(self._c_dada_hdu.header_block, len(py_string))
 
     def getNextPage(self):
-        """Return a memoryview on the next available ringbuffer page"""
+        """
+        Return a memoryview on the next available ringbuffer page.
 
+        The call is blocking; it will wait for a page to become available.
+
+        .. note:: The view is a direct mapping of the ringbuffer page.
+                  So, no memory copies, and no garbage collector.
+
+        :returns: a PyMemoryView
+        """
         if self.isEndOfData:
             # recover from a previous EOD signal
             dada_hdu.dada_hdu_lock_write(self._c_dada_hdu)
@@ -111,6 +146,14 @@ cdef class Writer(Ringbuffer):
         return <object> PyMemoryView_FromMemory(c_page, self._bufsz, PyBUF_WRITE)
 
     def markFilled(self):
+        """
+        Release a page back to the ringbuffer.
+
+        Mark the current page as filled and and return it to the ringbuffer.
+        This is called automatically when iterating over the ringbuffer.
+
+        .. seealso:: markEndOfData
+        """
         if self.isHoldingPage:
             dada_hdu.ipcbuf_mark_filled (<dada_hdu.ipcbuf_t *> self._c_dada_hdu.data_block, self._bufsz)
 

@@ -1,7 +1,7 @@
 
 Apache Software License 2.0
 
-Copyright (c) 2018, Jisk Attema
+Copyright (c) 2018, 2019, Jisk Attema
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,3 +15,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+
+The following files are taken from the PSRDada project, see their (website)[http://psrdada.sourceforge.net/] for license information:
+psrdada/ascii_header.c
+psrdada/ascii_header.h
+psrdada/dada_def.h
+psrdada/dada_hdu.c
+psrdada/dada_hdu.h
+psrdada/ipcbuf.c
+psrdada/ipcbuf.h
+psrdada/ipcio.c
+psrdada/ipcio.h
+psrdada/ipcutil.c
+psrdada/ipcutil.h
+psrdada/multilog.c
+psrdada/multilog.h
+psrdada/tmutil.c
+psrdada/tmutil.h
