@@ -106,11 +106,12 @@ cdef class Reader(Ringbuffer):
     def getNextPage(self):
         """
         Return a memoryview on the next available ringbuffer page.
+        Use *data = np.asarray(page)* to convert it to something more useable.
 
         The read is blocking; it will wait for a page to become available.
 
         .. note:: The view is readonly, and a direct mapping of the ringbuffer page.
-                  So, no memory copies, and no garbage collector.
+                  So, no memory copies, and no garbage collector.  
 
         :returns: a PyMemoryView
         """

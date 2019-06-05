@@ -13,10 +13,4 @@ Welcome to psrdada-python's documentation
 
    basic
    apidoc
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+   genindex

@@ -123,6 +123,7 @@ cdef class Writer(Ringbuffer):
         Return a memoryview on the next available ringbuffer page.
 
         The call is blocking; it will wait for a page to become available.
+        Use *data = np.asarray(page)* to convert it to something more useable.
 
         .. note:: The view is a direct mapping of the ringbuffer page.
                   So, no memory copies, and no garbage collector.

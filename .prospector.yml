@@ -24,3 +24,11 @@ pep257:
         D213,  # Multi-line docstring summary should start at the second line
         D404,  # First word of the docstring should not be This
     ]
+
+pylint:
+    disable:
+      - invalid-name
+
+ignore-paths: [
+        docs/
+    ]
