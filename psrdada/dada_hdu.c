@@ -147,10 +147,13 @@ int dada_hdu_unlock_read (dada_hdu_t* hdu)
 
   if (!hdu->data_block)
   {
-    fprintf (stderr, "dada_hdu_disconnect: not connected\n");
+    fprintf (stderr, "dada_hdu_unlock_read: not connected\n");
     return -1;
   }
 
+#ifdef _DEBUG
+  fprintf (stderr, "dada_hdu_unlock_read: ipcio_close (hdu->data_block)\n");
+#endif
   if (ipcio_close (hdu->data_block) < 0)
   {
     multilog (hdu->log, LOG_ERR, "Could not unlock Data Block read\n");
@@ -159,12 +162,23 @@ int dada_hdu_unlock_read (dada_hdu_t* hdu)
 
   if (hdu->header)
   {
+#ifdef _DEBUG
+    fprintf (stderr, "dada_hdu_unlock_read: free (hdu->header)\n");
+#endif
     free (hdu->header);
     hdu->header = 0;
     if (ipcbuf_is_reader (hdu->header_block))
+    {
+#ifdef _DEBUG
+      fprintf (stderr, "dada_hdu_unlock_read: ipcbuf_mark_cleared (hdu->header_block)\n");
+#endif
       ipcbuf_mark_cleared (hdu->header_block);
+    }
   }
 
+#ifdef _DEBUG
+  fprintf (stderr, "dada_hdu_unlock_read: ipcbuf_unlock_read (hdu->header_block)\n");
+#endif
   if (ipcbuf_unlock_read (hdu->header_block) < 0) {
     multilog (hdu->log, LOG_ERR,"Could not unlock Header Block read\n");
     return -1;
@@ -213,11 +227,19 @@ int dada_hdu_unlock_write (dada_hdu_t* hdu)
   }
 
   if (ipcio_is_open (hdu->data_block))
+  {
+#ifdef _DEBUG
+    fprintf (stderr, "dada_hdu_unlock_write: ipcio_close (hdu->data_block)\n");
+#endif
     if (ipcio_close (hdu->data_block) < 0) {
       multilog (hdu->log, LOG_ERR, "Could not unlock Data Block write\n");
       return -1;
     }
+  }
 
+#ifdef _DEBUG
+    fprintf (stderr, "dada_hdu_unlock_write: ipcbuf_unlock_write (hdu->header_block)\n");
+#endif
   if (ipcbuf_unlock_write (hdu->header_block) < 0) {
     multilog (hdu->log, LOG_ERR, "Could not unlock Header Block write\n");
     return -1;

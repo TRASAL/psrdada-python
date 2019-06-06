@@ -38,6 +38,9 @@ extern "C" {
   /*! create a new shared memory block and initialize an ipcio_t struct */
   int ipcio_create (ipcio_t* ipc, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned num_read);
 
+  /*! create a new shared memory block and initialize an ipcio_t struct, on GPU device_id */
+  int ipcio_create_work (ipcio_t* ipc, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned num_read, int device_id);
+
   /*! connect to an already created ipcbuf_t struct in shared memory */
   int ipcio_connect (ipcio_t* ipc, key_t key);
 

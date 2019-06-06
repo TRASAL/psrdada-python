@@ -5,6 +5,11 @@
 #include <ctype.h>
 #include <limits.h>
 
+#ifndef __USE_XOPEN
+#define __USE_XOPEN
+#endif
+#include <time.h>
+
 #include "tmutil.h"
 
 time_t str2time (const char* str)

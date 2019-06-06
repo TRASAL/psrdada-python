@@ -23,7 +23,7 @@ void* ipc_alloc (key_t key, size_t size, int flag, int* shmid)
 
   id = shmget (key, size, flag);
   if (id < 0) {
-    fprintf (stderr, "ipc_alloc: shmget (key=%x, size=%d, flag=%x) %s\n",
+    fprintf (stderr, "ipc_alloc: shmget (key=%x, size=%ld, flag=%x) %s\n",
              key, size, flag, strerror(errno));
     return 0;
   }
@@ -37,7 +37,7 @@ void* ipc_alloc (key_t key, size_t size, int flag, int* shmid)
   if (buf == (void*)-1) {
     fprintf (stderr,
 	     "ipc_alloc: shmat (shmid=%d) %s\n"
-	     "ipc_alloc: after shmget (key=%x, size=%d, flag=%x)\n",
+	     "ipc_alloc: after shmget (key=%x, size=%ld, flag=%x)\n",
 	     id, strerror(errno), key, size, flag);
     return 0;
   }

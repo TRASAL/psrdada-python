@@ -171,10 +171,11 @@ size_t ascii_header_get_size (char * filename)
 size_t ascii_header_get_size_fd (int fd)
 {
   size_t hdr_size = -1;
-  char * header = (char *) malloc (DADA_DEFAULT_HEADER_SIZE+1);
+  size_t default_header_size = DADA_DEFAULT_HEADER_SIZE;
+  char * header = (char *) malloc (default_header_size + 1);
   if (!header)
   {
-    fprintf (stderr, "ascii_header_get_size: failed to allocate %d bytes\n", DADA_DEFAULT_HEADER_SIZE+1);
+    fprintf (stderr, "ascii_header_get_size: failed to allocate %ld bytes\n", default_header_size + 1);
   }
   else
   {
@@ -182,10 +183,10 @@ size_t ascii_header_get_size_fd (int fd)
     lseek (fd, 0, SEEK_SET);
 
     // read the header 
-    ssize_t ret = read (fd, header, DADA_DEFAULT_HEADER_SIZE);
-    if (ret != DADA_DEFAULT_HEADER_SIZE)
+    ssize_t ret = read (fd, header, default_header_size);
+    if (ret != default_header_size)
     {
-      fprintf (stderr, "ascii_header_get_size: failed to read %d bytes from file\n", DADA_DEFAULT_HEADER_SIZE);
+      fprintf (stderr, "ascii_header_get_size: failed to read %ld bytes from file\n", default_header_size);
     }
     else
     {

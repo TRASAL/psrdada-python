@@ -1,5 +1,4 @@
 
-
 #include <sys/types.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -16,11 +15,16 @@
 
 #include <time.h>
 
-#include <emmintrin.h>
+#include "config.h"
 #include "ipcbuf.h"
+#include "tmutil.h"
 #include "ipcutil.h"
 
-//#define _DEBUG 1
+#ifdef HAVE_CUDA
+#include "ipcutil_cuda.h"
+#endif
+
+// #define _DEBUG 1
 
 /* semaphores */
 
@@ -134,16 +138,27 @@ int ipcbuf_get (ipcbuf_t* id, int flag, int n_readers)
 
   id->buffer = (char**) malloc (sizeof(char*) * sync->nbufs);
   assert (id->buffer != 0);
+  id->shm_addr = (void**) malloc (sizeof(void*) * sync->nbufs);
+  assert (id->shm_addr != 0);
   id->shmid = (int*) malloc (sizeof(int) * sync->nbufs);
   assert (id->shmid != 0);
 
   for (ibuf=0; ibuf < sync->nbufs; ibuf++)
   {
-    id->buffer[ibuf] = ipc_alloc (id->shmkey[ibuf], sync->bufsz, 
-          flag, id->shmid + ibuf);
-#ifdef _DEBUG
-    fprintf (stderr, "ipcbuf_get: id->buffer[%u]=%p\n", ibuf, (void *) id->buffer[ibuf]);
+#ifdef HAVE_CUDA
+    if (sync->on_device_id >= 0)
+    {
+      id->buffer[ibuf] = ipc_alloc_cuda (id->shmkey[ibuf], sync->bufsz,
+                                         flag, id->shmid + ibuf, &(id->shm_addr[ibuf]),
+                                         sync->on_device_id);
+    }
+    else
 #endif
+    {
+      id->buffer[ibuf] = ipc_alloc (id->shmkey[ibuf], sync->bufsz, 
+            flag, id->shmid + ibuf);
+      id->shm_addr[ibuf] = id->buffer[ibuf];
+    }
 
     if ( id->buffer[ibuf] == 0 )
     {
@@ -173,6 +188,11 @@ static int key_increment  = 0x00010000;
 
 int ipcbuf_create (ipcbuf_t* id, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned n_readers)
 {
+  return ipcbuf_create_work (id, key, nbufs, bufsz, n_readers, -1); 
+}
+
+int ipcbuf_create_work (ipcbuf_t* id, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned n_readers, int device_id)
+{
   uint64_t ibuf = 0;
   uint64_t iread = 0;
   int flag = IPCUTIL_PERM | IPC_CREAT | IPC_EXCL;
@@ -191,6 +211,11 @@ int ipcbuf_create (ipcbuf_t* id, key_t key, uint64_t nbufs, uint64_t bufsz, unsi
   id->sync->nbufs     = nbufs;
   id->sync->bufsz     = bufsz;
   id->sync->n_readers = n_readers;
+#ifdef HAVE_CUDA
+  id->sync->on_device_id = device_id;
+#else
+  id->sync->on_device_id = -1;
+#endif
 
   for (ibuf = 0; ibuf < IPCBUF_XFERS; ibuf++)
   {
@@ -265,20 +290,19 @@ int ipcbuf_create (ipcbuf_t* id, key_t key, uint64_t nbufs, uint64_t bufsz, unsi
   {
     if (ipc_semop (id->semid_data[iread], IPCBUF_SODACK, IPCBUF_XFERS, 0) < 0)
     {
-      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_SODACK for reader %d\n", iread);
+      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_SODACK for reader %lu\n", iread);
       return -1;
     }
     if (ipc_semop (id->semid_data[iread], IPCBUF_EODACK, IPCBUF_XFERS, 0) < 0)
     {
-      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_EODACK for reader %d\n", iread);
+      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_EODACK for reader %lu\n", iread);
       return -1;
     }
     if (ipc_semop (id->semid_data[iread], IPCBUF_READER_CONN, 1, 0) < 0)
     {
-      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_EODACK for reader %d\n", iread);
+      fprintf (stderr, "ipcbuf_create: error incrementing IPCBUF_READER_CONN for reader %lu\n", iread);
       return -1;
     }
-
   }
 
   id->state = IPCBUF_VIEWER;
@@ -334,10 +358,31 @@ int ipcbuf_disconnect (ipcbuf_t* id)
   }
 
   for (ibuf = 0; ibuf < id->sync->nbufs; ibuf++)
-    if (id->buffer[ibuf] && shmdt (id->buffer[ibuf]) < 0)
-      perror ("ipcbuf_disconnect: shmdt(buffer)");
+  {
+#ifdef HAVE_CUDA
+    if (id->sync->on_device_id >= 0)
+    {
+      if (id->buffer[ibuf])
+      {
+        if (ipc_disconnect_cuda (id->buffer[ibuf])< 0)  
+          fprintf (stderr, "ipc_disconnect_cuda failed on buffer[%lu]\n", ibuf);
+      }
+      if (id->shm_addr[ibuf] && shmdt (id->shm_addr[ibuf]) < 0)
+      {
+        fprintf (stderr, "ipcbuf_disconnect: shmdt(shm_addr[%lu]) failed\n", ibuf);
+        perror ("ipcbuf_disconnect: shmdt(buffer)");
+      }
+    } 
+    else
+#endif
+    {
+      if (id->buffer[ibuf] && shmdt (id->buffer[ibuf]) < 0)
+        perror ("ipcbuf_disconnect: shmdt(buffer)");
+    }
+  }
 
   if (id->buffer) free (id->buffer); id->buffer = 0;
+  if (id->shm_addr) free (id->shm_addr); id->shm_addr = 0;
   if (id->shmid) free (id->shmid); id->shmid = 0;
   if (id->semid_data) free (id->semid_data); id->semid_data = 0;
 
@@ -385,6 +430,10 @@ int ipcbuf_destroy (ipcbuf_t* id)
              ibuf, id->shmid[ibuf]);
 #endif
 
+#ifdef HAVE_CUDA
+    if (id->sync->on_device_id >= 0)
+      ipc_dealloc_cuda (id->buffer[ibuf], id->sync->on_device_id);
+#endif
     if (id->buffer)
       id->buffer[ibuf] = 0;
 
@@ -728,11 +777,18 @@ int ipcbuf_zero_next_write (ipcbuf_t *id)
         have_cleared = 0;
     }
     if (!have_cleared)
+    {
       float_sleep(0.01);
+    }
   }
 
   // zap bufnum
-  bzero (id->buffer[next_buf], id->sync->bufsz);
+#ifdef HAVE_CUDA
+  if (id->sync->on_device_id >= 0)
+    ipc_zero_buffer_cuda (id->buffer[next_buf], id->sync->bufsz);
+  else
+#endif
+    bzero (id->buffer[next_buf], id->sync->bufsz);
   return 0;
 }
 
@@ -983,7 +1039,9 @@ int ipcbuf_unlock_read (ipcbuf_t* id)
   }
 
   id->state = IPCBUF_VIEWER;
+#ifdef _DEBUG
   int iread = id->iread;
+#endif
   id->iread = -1;
 
 #ifdef _DEBUG
@@ -1151,6 +1209,11 @@ char* ipcbuf_get_next_read_work (ipcbuf_t* id, uint64_t* bytes, int flag)
     else
       *bytes = sync->bufsz - start_byte;
   }
+
+#ifdef _DEBUG
+  fprintf (stderr, "ipcbuf_get_next_read: returning ptr=%p + %lu\n",
+           (void *) (id->buffer[bufnum]), start_byte);
+#endif
 
   return id->buffer[bufnum] + start_byte;
 }
@@ -1471,7 +1534,12 @@ int ipcbuf_page (ipcbuf_t* id)
 
   for (ibuf = 0; ibuf < id->sync->nbufs; ibuf++)
   {
-    bzero (id->buffer[ibuf], id->sync->bufsz); 
+#ifdef HAVE_CUDA
+    if (id->sync->on_device_id >= 0)
+      ipc_zero_buffer_cuda( id->buffer[ibuf], id->sync->bufsz );
+    else
+#endif
+      bzero (id->buffer[ibuf], id->sync->bufsz); 
   }
 
   return 0;
@@ -1703,3 +1771,9 @@ uint64_t ipcbuf_set_soclock_buf (ipcbuf_t* id)
   return id->soclock_buf;
 }
 
+#ifdef HAVE_CUDA
+int ipcbuf_get_device (ipcbuf_t* id)
+{
+  return id->sync->on_device_id;
+}
+#endif

@@ -1,6 +1,8 @@
 #ifndef __DADA_IPCBUF_H
 #define __DADA_IPCBUF_H
 
+//#include "config.h"
+
 /* ************************************************************************
 
    ipcbuf_t - a struct and associated routines for creation and management
@@ -61,6 +63,9 @@ extern "C" {
     /* the last valid byte when sod is raised */
     uint64_t e_byte [IPCBUF_XFERS];
 
+    /* CUDA device upon which buffers may reside, -1 for host */
+    int on_device_id;
+
   } ipcsync_t;
 
   typedef struct {
@@ -74,6 +79,7 @@ extern "C" {
 
     ipcsync_t* sync;       /* pointer to sync structure in shared memory */
     char**     buffer;     /* base addresses of sub-blocks in shared memory */
+    void**     shm_addr;   /* shm addresses of sub-blocks in shared memory */
     char*      count;      /* the pending xfer count in each buffer in the ring */
     key_t*     shmkey;     /* shared memory keys */
 
@@ -87,7 +93,7 @@ extern "C" {
 
   } ipcbuf_t;
 
-#define IPCBUF_INIT {0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1}
+#define IPCBUF_INIT {0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1}
 
   /* ////////////////////////////////////////////////////////////////////
      
@@ -97,6 +103,7 @@ extern "C" {
 
   /*! Initialize an ipcbuf_t struct, creating shm and sem */
   int ipcbuf_create (ipcbuf_t*, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned num_readers);
+  int ipcbuf_create_work (ipcbuf_t*, key_t key, uint64_t nbufs, uint64_t bufsz, unsigned num_readers, int device_id);
 
   /*! Connect to an already created ipcsync_t struct in shm */
   int ipcbuf_connect (ipcbuf_t*, key_t key);
@@ -256,6 +263,12 @@ extern "C" {
 
   /*! set the start of clocking data buffer  */
   uint64_t ipcbuf_set_soclock_buf(ipcbuf_t*);
+
+#ifdef HAVE_CUDA
+  /*! return CUDA device_id for the data buffer, -1 for host */
+  int ipcbuf_get_device (ipcbuf_t* id);
+#endif
+
 
 #ifdef __cplusplus
 	   }
