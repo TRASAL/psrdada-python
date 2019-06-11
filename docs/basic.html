@@ -5,19 +5,19 @@
   <head>
     <meta charset="utf-8" />
     <title>Basic example &#8212; psrdada-python  documentation</title>
-    <link rel="stylesheet" href="raw/master/docs/_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="raw/master/docs/_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="raw/master/docs/_static/documentation_options.js"></script>
-    <script type="text/javascript" src="raw/master/docs/_static/jquery.js"></script>
-    <script type="text/javascript" src="raw/master/docs/_static/underscore.js"></script>
-    <script type="text/javascript" src="raw/master/docs/_static/doctools.js"></script>
-    <script type="text/javascript" src="raw/master/docs/_static/language_data.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Api documentation" href="apidoc.html" />
     <link rel="prev" title="Welcome to psrdada-python’s documentation" href="index.html" />
    
-  <link rel="stylesheet" href="raw/master/docs/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -46,11 +46,8 @@ the Iterator interface:</p>
 
 <span class="k">def</span> <span class="nf">read_untill_end</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Connect, read all pages, and disconnect from a ringbuffer.&quot;&quot;&quot;</span>
-    <span class="c1"># Create a reader instace</span>
-    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">()</span>
-
-    <span class="c1"># Connect to a running ringbuffer with key &#39;dada&#39;</span>
-    <span class="n">reader</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
+    <span class="c1"># Create a reader instace and connect to a running ringbuffer</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
 
     <span class="c1"># loop over the pages</span>
     <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
@@ -78,11 +75,8 @@ more C-like API:</p>
 
 <span class="k">def</span> <span class="nf">read_untill_end</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Connect, read all pages, and disconnect from a ringbuffer.&quot;&quot;&quot;</span>
-    <span class="c1"># Create a reader instace</span>
-    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">()</span>
-
-    <span class="c1"># Connect to a running ringbuffer with key &#39;dada&#39;</span>
-    <span class="n">reader</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
+    <span class="c1"># Create a reader instace and connect to a running ringbuffer</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
 
     <span class="c1"># loop over the pages until EOD is encountered</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">reader</span><span class="o">.</span><span class="n">isEndOfData</span><span class="p">:</span>
