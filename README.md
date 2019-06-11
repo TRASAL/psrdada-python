@@ -3,7 +3,7 @@ Python3 bindings to the ringbuffer implementation in [PSRDada](http://psrdada.so
 
 It allows you to connect to a ringbuffer, read header info, and read/write ringbuffer pages as numpy arrays.
 I aim to be interoperable, and bug-for-bug compattible, with PSRDADA.
-It also supports reading multiple datasets form a ringbuffer for connecting to dada\_dbevent.
+It also supports reading multiple datasets from a ringbuffer for connecting to dada\_dbevent.
 
 This is a proof-of-concept implementation, only functions from PSRDADA immediately necessary for my project will be implemented.
 The code is inspired by the example code in the [cython userguide](http://cython.readthedocs.io/en/latest/src/userguide/buffer.html)

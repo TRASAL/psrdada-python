@@ -3,6 +3,14 @@
 Reader class.
 
 Implements reading header and data from a running PSRDada ringbuffer.
+Create a new reader instance::
+
+    reader = Reader()
+
+Create a new reader instance, and connect it directly to a running ringbuffer::
+
+    reader = Reader(0xdada)
+
 """
 from cpython.buffer cimport PyBUF_READ
 cimport dada_hdu
@@ -23,9 +31,14 @@ cdef class Reader(Ringbuffer):
 
     Implements reading header and data from a running PSRDada ringbuffer.
     """
-    def __init__(self):
-        self.isEndOfData = False
-        self.isHoldingPage = False
+    def __init__(self, key=None):
+        """
+        Creates a new Reader instance, and optionally connects to a ringbuffer.
+
+        :param key: Optional. Identifier of the ringbuffer, typically 0xdada
+        """
+        if key:
+            self.connect(key)
 
     def connect(self, key):
         """

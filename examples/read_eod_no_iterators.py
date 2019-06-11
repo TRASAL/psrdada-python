@@ -8,9 +8,7 @@ import numpy as np
 
 from psrdada import Reader
 
-reader = Reader()
-
-reader.connect(0xdbda)
+reader = Reader(0xdbda)
 
 nheader = 0
 while True:

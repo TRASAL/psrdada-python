@@ -17,9 +17,7 @@ def random_string(length=10):
     return ''.join(choice(ascii_lowercase) for i in range(length))
 
 
-writer = Writer()
-
-writer.connect(0xdbda)
+writer = Writer(0xdbda)
 
 # send 10 datasets, separated by an EOD
 for ndataset in range(10):

@@ -6,11 +6,8 @@ from psrdada import Reader
 
 def read_untill_end():
     """Connect, read all pages, and disconnect from a ringbuffer."""
-    # Create a reader instace
-    reader = Reader()
-
-    # Connect to a running ringbuffer with key 'dada'
-    reader.connect(0xdada)
+    # Create a reader instace and connect to a running ringbuffer
+    reader = Reader(0xdada)
 
     # loop over the pages
     for page in reader:

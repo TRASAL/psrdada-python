@@ -12,6 +12,9 @@ cdef class Ringbuffer:
 
         self._c_dada_hdu = dada_hdu.dada_hdu_create(self._multilog)
         self._key = 0xdada
+        self.isConnected = False
+        self.isHoldingPage = False
+        self.isEndOfData = False
         self.header = dict()
 
     def __dealloc__(self):

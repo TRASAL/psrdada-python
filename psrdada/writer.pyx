@@ -3,6 +3,13 @@
 Writer class.
 
 Implements writing header and data from a running PSRDada ringbuffer.
+Create a new writer instance::
+
+    writer = Writer()
+
+Create a new reader instance, and connect it directly to a running ringbuffer::
+
+    writer = Writer(0xdada)
 """
 
 from cpython.buffer cimport PyBUF_WRITE
@@ -25,6 +32,15 @@ cdef class Writer(Ringbuffer):
 
     Implements writing header and data to a running PSRDada ringbuffer.
     """
+    def __init__(self, key=None):
+        """
+        Creates a new Reader instance, and optionally connects to a ringbuffer.
+
+        :param key: Optional. Identifier of the ringbuffer, typically 0xdada
+        """
+        if key:
+            self.connect(key)
+
     def connect(self, key):
         """
         Connect to a PSR DADA ringbuffer with the specified key, and lock it for writing
