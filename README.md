@@ -17,6 +17,8 @@ Depending on your OS, you can read those using:
 ```
 
 # Documentation
+
+[The documentation is available here](https://aa-alert.github.io/psrdada-python/)
 See the two scripts in the examples directory, and the tests.
 
 ```python
@@ -24,11 +26,8 @@ See the two scripts in the examples directory, and the tests.
 import numpy as np
 from psrdada import Reader
 
-# Create a reader instace
-reader = Reader()
-
-# Connect to a running ringbuffer with key 'dada'
-reader.connect(0xdada)
+# Create a reader instace and connect to a running ringbuffer with key 'dada'
+reader = Reader(0xdada)
 
 # loop over the pages
 for page in reader:
