@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Basic example &#8212; psrdada-python  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Api documentation" href="apidoc.html" />
+    <link rel="prev" title="Welcome to psrdada-python’s documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="basic-example">
+<h1>Basic example<a class="headerlink" href="#basic-example" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-iterators">
+<h2>Using iterators<a class="headerlink" href="#using-iterators" title="Permalink to this headline">¶</a></h2>
+<p>Connect to and read from a PSRDada ringbuffer in a pythonic way, using
+the Iterator interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Example program showing how to read from a ringbuffer using an iterator.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">psrdada</span> <span class="k">import</span> <span class="n">Reader</span>
+
+
+<span class="k">def</span> <span class="nf">read_untill_end</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Connect, read all pages, and disconnect from a ringbuffer.&quot;&quot;&quot;</span>
+    <span class="c1"># Create a reader instace</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">()</span>
+
+    <span class="c1"># Connect to a running ringbuffer with key &#39;dada&#39;</span>
+    <span class="n">reader</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
+
+    <span class="c1"># loop over the pages</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="c1"># read the page as numpy array</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+    <span class="n">reader</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">read_untill_end</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="explicit-ringbuffer-control">
+<h2>Explicit ringbuffer control<a class="headerlink" href="#explicit-ringbuffer-control" title="Permalink to this headline">¶</a></h2>
+<p>For usecases that require a more finegrained flow control, there is a
+more C-like API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Example program showing how to read from a ringbuffer.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">psrdada</span> <span class="k">import</span> <span class="n">Reader</span>
+
+
+<span class="k">def</span> <span class="nf">read_untill_end</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Connect, read all pages, and disconnect from a ringbuffer.&quot;&quot;&quot;</span>
+    <span class="c1"># Create a reader instace</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">()</span>
+
+    <span class="c1"># Connect to a running ringbuffer with key &#39;dada&#39;</span>
+    <span class="n">reader</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="mh">0xdada</span><span class="p">)</span>
+
+    <span class="c1"># loop over the pages until EOD is encountered</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">reader</span><span class="o">.</span><span class="n">isEndOfData</span><span class="p">:</span>
+        <span class="c1"># read the page as numpy array</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">getNextPage</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="n">reader</span><span class="o">.</span><span class="n">markCleared</span><span class="p">()</span>
+
+    <span class="n">reader</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">read_untill_end</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="more-examples">
+<h2>More examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
+<p>For more examples, see the <em>examples</em> and <em>tests</em> directories in the repo.
+Examples cover writing to the ringbuffer, reading and writing header data, and dealing with EndOfData.
+EndOfData is used by <em>dada_dbevent</em> to send independent datasets through a ringbuffer, instead of a single continuous stream.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">psrdada-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-iterators">Using iterators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explicit-ringbuffer-control">Explicit ringbuffer control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-examples">More examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">Api documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to psrdada-python’s documentation</a></li>
+      <li>Next: <a href="apidoc.html" title="next chapter">Api documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jisk Attema.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/basic.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
