@@ -50,14 +50,17 @@ build the package
 
 # Dependencies
 
-PSRDada dada\_db exectuable in the PATH; see their [website](https://sourceforge.net)
+PSRDada, see their [website](https://sourceforge.net):
+
+ * PSRDada dada\_db exectuable in the PATH for testing;
+
+ * PSRDada header files needed for compilation, set CPATH or CFLAGS.
+
+ * PSRDada library needed during runtime, set LD\_LIBRARY\_PATH
 
 # License
 Copyright (c) 2018, Jisk Attema
 Apache Software License 2.0.
-
-This packages contains some files from the PSRDada project; a different license could apply.
-See the file *LICENSE.md* from details.
 
 # Contributing
 
@@ -66,3 +69,6 @@ Please use the github issue tracker to get in touch.
 
 Contributing authors so far:
 * Jisk Attema
+* Leon Oostrum
+* Liam Connor
+

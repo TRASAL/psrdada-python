@@ -10,6 +10,7 @@ Build and install the package using distutils.
 from Cython.Build import cythonize
 from setuptools import setup
 from distutils.extension import Extension
+from os import environ
 
 with open('README.md') as readme_file:
     README = readme_file.read()
@@ -17,16 +18,57 @@ with open('README.md') as readme_file:
 with open('VERSION') as version_file:
     PROJECT_VERSION = version_file.read()
 
+# Get the header locations from the environment
+INCLUDE_DIRS = []
+if "CPATH" in environ:
+    flags = environ["CPATH"].split(':')
+    for flag in flags:
+        # when usingn spack, there is no -I prefix
+        INCLUDE_DIRS.append(flag)
+
+if "CFLAGS" in environ:
+    flags = environ["CFLAGS"].split(' ')
+    for flag in flags:
+        if flag[0:2] == '-I':
+            # when usingn spack, there is no -I prefix
+            INCLUDE_DIRS.append(flag[2:-1])
+
+# keep the original order
+INCLUDE_DIRS.reverse() 
+
+# Get the header locations from the environment
+LIBRARY_DIRS = []
+if "LD_LIBRARY_PATH" in environ:
+    flags = environ["LD_LIBRARY_PATH"].split(':')
+    for flag in flags:
+        # when usingn spack, there is no -I prefix
+        LIBRARY_DIRS.append(flag)
+
+    # keep the original order
+    LIBRARY_DIRS.reverse() 
+
 EXTENSIONS = [
     Extension(
         "psrdada.ringbuffer",
-        ["psrdada/ringbuffer.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
+        ["psrdada/ringbuffer.pyx"], 
+        libraries=["psrdada"],
+        library_dirs=LIBRARY_DIRS,
+        include_dirs=INCLUDE_DIRS
+        ),
     Extension(
         "psrdada.reader",
-        ["psrdada/reader.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
+        ["psrdada/reader.pyx"],
+        libraries=["psrdada"],
+        library_dirs=LIBRARY_DIRS,
+        include_dirs=INCLUDE_DIRS
+        ),
     Extension(
         "psrdada.writer",
-        ["psrdada/writer.pyx","psrdada/dada_hdu.c",  "psrdada/ipcio.c", "psrdada/ipcbuf.c", "psrdada/ascii_header.c", "psrdada/ipcutil.c", "psrdada/multilog.c", "psrdada/tmutil.c"]),
+        ["psrdada/writer.pyx"],
+        libraries=["psrdada"],
+        library_dirs=LIBRARY_DIRS,
+        include_dirs=INCLUDE_DIRS
+        ),
     ]
 
 setup(
