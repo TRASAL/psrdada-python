@@ -1,4 +1,7 @@
 # PSRDada Python
+
+[![DOI](https://zenodo.org/badge/132437444.svg)](https://zenodo.org/badge/latestdoi/132437444)
+
 Python3 bindings to the ringbuffer implementation in [PSRDada](http://psrdada.sourceforge.net/)
 
 It allows you to connect to a ringbuffer, read header info, and read/write ringbuffer pages as numpy arrays.
