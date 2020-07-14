@@ -1,0 +1,31 @@
+{
+    "creators": [
+        {
+            "affiliation": "Netherlands eScience Center",
+            "name": "Attema, Jisk",
+            "orcid": "0000-0002-0948-1176"
+        },
+        {
+            "affiliation": "ASTRON / UvA",
+            "name": "Oostrum, Leon",
+            "orcid": "0000-0001-8724-8372"
+        },
+        {
+            "affiliation": "ASTRON / UvA",
+            "name": "Connor, Liam",
+            "orcid": "0000-0002-7587-6352"
+        }
+    ],
+    "keywords": [
+        "PSRDada",
+        "Python3",
+        "Astrophysics",
+        "Pulsars",
+        "Fast Radio Bursts FRB",
+        "Data processing"
+    ],
+    "license": {
+        "id": "Apache-2.0"
+    },
+    "title": "psrdada-python"
+}
