@@ -11,7 +11,6 @@ from Cython.Build import cythonize
 from setuptools import setup
 from distutils.extension import Extension
 from os import environ, path
-from psrdada import __version__
 
 with open('README.md') as readme_file:
     README = readme_file.read()
