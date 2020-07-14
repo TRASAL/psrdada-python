@@ -10,13 +10,16 @@ Build and install the package using distutils.
 from Cython.Build import cythonize
 from setuptools import setup
 from distutils.extension import Extension
-from os import environ
+from os import environ, path
+from psrdada import __version__
 
 with open('README.md') as readme_file:
     README = readme_file.read()
 
-with open('VERSION') as version_file:
-    PROJECT_VERSION = version_file.read()
+with open(path.join('psrdada', '__version__.py')) as version_file:
+    version = {}
+    exec(version_file.read(), version)
+    PROJECT_VERSION = version['__version__']
 
 # Get the header locations from the environment
 INCLUDE_DIRS = []

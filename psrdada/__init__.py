@@ -18,11 +18,12 @@ Use cases are:
     * a glue layer to run CUDA kernels
     * interactive use of the telescope
 """
-
 from psrdada.reader import Reader
 from psrdada.writer import Writer
+from .__version__ import __version__
 
 __author__ = 'Jisk Attema'
 __email__ = 'j.attema@esciencecenter.nl'
 
 __all__ = ['Reader', 'Writer']
+__version__ = '0.1.0'
