@@ -16,6 +16,13 @@ authors:
     family-names: Connor
     given-names: Liam
     orcid: "https://orcid.org/0000-0002-7587-6352"
+keywords: 
+  - PSRDada
+  - Python3
+  - Astrophysics
+  - Pulsars
+  - "Fast Radio Bursts FRB"
+  - "Data processing"
 cff-version: "1.1.0"
 license: "Apache-2.0"
 message: "If you use this software, please cite it using these metadata."
