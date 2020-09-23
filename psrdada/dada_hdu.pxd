@@ -33,6 +33,19 @@ cdef extern from "ipcbuf.h":
     int ipcbuf_eod (ipcbuf_t*)
     int ipcbuf_reset (ipcbuf_t*)
 
+    uint64_t ipcbuf_get_write_count (ipcbuf_t*)
+    uint64_t ipcbuf_get_read_count (ipcbuf_t*)
+    uint64_t ipcbuf_get_read_count_iread (ipcbuf_t*, int)
+    uint64_t ipcbuf_get_nfull (ipcbuf_t*)
+    uint64_t ipcbuf_get_nfull_iread (ipcbuf_t*, int)
+    uint64_t ipcbuf_get_nclear (ipcbuf_t*)
+    uint64_t ipcbuf_get_nclear_iread (ipcbuf_t*, int)
+
+    int ipcbuf_get_nreaders (ipcbuf_t*)
+    uint64_t ipcbuf_get_nbufs (ipcbuf_t*)
+
+
+
 cdef extern from "ipcio.h":
     ctypedef struct ipcio_t:
         pass
