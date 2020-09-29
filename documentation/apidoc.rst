@@ -49,3 +49,10 @@ Writer
 .. autoclass:: Writer
    :show-inheritance:
    :members:
+
+Viewer
+------
+
+.. autoclass:: Viewer
+   :show-inheritance:
+   :members:
