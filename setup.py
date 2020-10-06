@@ -71,6 +71,13 @@ EXTENSIONS = [
         library_dirs=LIBRARY_DIRS,
         include_dirs=INCLUDE_DIRS
         ),
+    Extension(
+        "psrdada.viewer",
+        ["psrdada/viewer.pyx"],
+        libraries=["psrdada"],
+        library_dirs=LIBRARY_DIRS,
+        include_dirs=INCLUDE_DIRS
+        ),
     ]
 
 setup(

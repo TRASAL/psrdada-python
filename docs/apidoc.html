@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Api documentation &#8212; psrdada-python  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Index" href="genindex.html" />
@@ -54,17 +55,17 @@ interact with via fi. numpy.</p>
 </dl>
 <div class="section" id="ringbuffer">
 <h2>Ringbuffer<a class="headerlink" href="#ringbuffer" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="psrdada.Ringbuffer">
 <em class="property">class </em><code class="sig-prename descclassname">psrdada.</code><code class="sig-name descname">Ringbuffer</code><a class="headerlink" href="#psrdada.Ringbuffer" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<dd><dl class="py attribute">
 <dt id="psrdada.Ringbuffer.isConnected">
 <code class="sig-name descname">isConnected</code><a class="headerlink" href="#psrdada.Ringbuffer.isConnected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean; indicates if the Ringbuffer instance is connected to a
 running dada_db.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="psrdada.Ringbuffer.isHoldingPage">
 <code class="sig-name descname">isHoldingPage</code><a class="headerlink" href="#psrdada.Ringbuffer.isHoldingPage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean; indicates if the Ringbuffer instance is currently holding a page;
@@ -72,14 +73,14 @@ ie. has exclusive write access to it for Writers, or is preventing it from
 being rewritten for Readers.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="psrdada.Ringbuffer.isEndOfData">
 <code class="sig-name descname">isEndOfData</code><a class="headerlink" href="#psrdada.Ringbuffer.isEndOfData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean; indicates if the EOD flag has been set on the Ringbuffer. Used
 to implement iterators for the Reader and Writer classes.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="psrdada.Ringbuffer.header">
 <code class="sig-name descname">header</code><a class="headerlink" href="#psrdada.Ringbuffer.header" title="Permalink to this definition">¶</a></dt>
 <dd><p>dict; contains a copy of the last read header. For Readers, the original
@@ -91,13 +92,13 @@ un-parsed header is available under the __RAW_HEADER__ key.</p>
 </div>
 <div class="section" id="reader">
 <h2>Reader<a class="headerlink" href="#reader" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="psrdada.Reader">
 <em class="property">class </em><code class="sig-prename descclassname">psrdada.</code><code class="sig-name descname">Reader</code><a class="headerlink" href="#psrdada.Reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">psrdada.ringbuffer.Ringbuffer</span></code></p>
 <p>Reader class.</p>
 <p>Implements reading header and data from a running PSRDada ringbuffer.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Reader.connect">
 <code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Reader.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a PSRDada ringbuffer with the specified key, and lock it for reading.</p>
@@ -108,13 +109,13 @@ un-parsed header is available under the __RAW_HEADER__ key.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Reader.disconnect">
 <code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Reader.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from the PSRDada ringbuffer</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Reader.getHeader">
 <code class="sig-name descname">getHeader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Reader.getHeader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a header from the ringbuffer and return it as a dict.</p>
@@ -141,7 +142,7 @@ If EndOfData has been set on the buffer, it is cleared and the buffer is reset.<
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Reader.getNextPage">
 <code class="sig-name descname">getNextPage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Reader.getNextPage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a memoryview on the next available ringbuffer page.
@@ -159,7 +160,7 @@ So, no memory copies, and no garbage collector.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Reader.markCleared">
 <code class="sig-name descname">markCleared</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Reader.markCleared" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release a page back to the ringbuffer.</p>
@@ -172,13 +173,13 @@ This is called automatically when iterating over the ringbuffer.</p>
 </div>
 <div class="section" id="writer">
 <h2>Writer<a class="headerlink" href="#writer" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="psrdada.Writer">
 <em class="property">class </em><code class="sig-prename descclassname">psrdada.</code><code class="sig-name descname">Writer</code><a class="headerlink" href="#psrdada.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">psrdada.ringbuffer.Ringbuffer</span></code></p>
 <p>Writer class.</p>
 <p>Implements writing header and data to a running PSRDada ringbuffer.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.connect">
 <code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a PSR DADA ringbuffer with the specified key, and lock it for writing</p>
@@ -189,13 +190,13 @@ This is called automatically when iterating over the ringbuffer.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.disconnect">
 <code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from PSRDada ringbuffer</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.getNextPage">
 <code class="sig-name descname">getNextPage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.getNextPage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a memoryview on the next available ringbuffer page.</p>
@@ -213,7 +214,7 @@ So, no memory copies, and no garbage collector.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.markEndOfData">
 <code class="sig-name descname">markEndOfData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.markEndOfData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the EOD (end-of-data) flag, and mark the page as filled.</p>
@@ -228,7 +229,7 @@ iterators.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.markFilled">
 <code class="sig-name descname">markFilled</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.markFilled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release a page back to the ringbuffer.</p>
@@ -240,7 +241,7 @@ This is called automatically when iterating over the ringbuffer.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="psrdada.Writer.setHeader">
 <code class="sig-name descname">setHeader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Writer.setHeader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a dict to a ringbuffer header page.</p>
@@ -262,6 +263,61 @@ If EndOfData has been set on the buffer, it is cleared and the buffer is reset.<
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="viewer">
+<h2>Viewer<a class="headerlink" href="#viewer" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="psrdada.Viewer">
+<em class="property">class </em><code class="sig-prename descclassname">psrdada.</code><code class="sig-name descname">Viewer</code><a class="headerlink" href="#psrdada.Viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">psrdada.ringbuffer.Ringbuffer</span></code></p>
+<p>Viewer class.</p>
+<p>Implements monitoring buffer statistics from a running PSRDada ringbuffer.</p>
+<dl class="py method">
+<dt id="psrdada.Viewer.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Viewer.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Passively connect to a PSRDada ring buffer with the specified key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> – Hex identifier of the ring buffer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="psrdada.Viewer.getbufstats">
+<code class="sig-name descname">getbufstats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#psrdada.Viewer.getbufstats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get monitoring statistics. This 
+subroutine is based on <em>psrdada</em>’s <em>dada_dbmonitor</em></p>
+<p>This call can be made in a loop for consistent monitoring</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Every dict returned by this function has 5 keys:</p>
+<ul class="simple">
+<li><p><em>FREE</em>: Current number of free header/data buffers</p></li>
+<li><p><em>FULL</em>: Current number of full header/data buffers</p></li>
+<li><p><em>CLEAR</em>: Current number of header/data buffers cleared for
+writing</p></li>
+<li><p><em>NWRITE</em>: Total number of header/data pages that 
+have been written</p></li>
+<li><p><em>NREAD</em>: Total number of header/data pages that have 
+been read</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>2-element tuple containing:</p>
+<ul class="simple">
+<li><p>A dict for header buffer statistics</p></li>
+<li><p>A list of dict for data buffer statistics. The list is 
+for every reader connected to the ringbuffer</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -294,6 +350,7 @@ If EndOfData has been set on the buffer, it is cleared and the buffer is reset.<
 <li class="toctree-l2"><a class="reference internal" href="#ringbuffer">Ringbuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reader">Reader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#writer">Writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewer">Viewer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -317,7 +374,7 @@ If EndOfData has been set on the buffer, it is cleared and the buffer is reset.<
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -334,7 +391,7 @@ If EndOfData has been set on the buffer, it is cleared and the buffer is reset.<
       &copy;2019, Jisk Attema.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
