@@ -74,4 +74,5 @@ Contributing authors so far:
 * Jisk Attema
 * Leon Oostrum
 * Liam Connor
+* Wael Farah
 
