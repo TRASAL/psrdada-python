@@ -21,7 +21,7 @@ Depending on your OS, you can read those using:
 
 # Documentation
 
-[The documentation is available here](https://aa-alert.github.io/psrdada-python/)
+[The documentation is available here](https://trasal.github.io/psrdada-python/)
 See the two scripts in the examples directory, and the tests.
 
 ```python
@@ -43,7 +43,7 @@ reader.disconnect()
 
 # Installation
 clone the repository  
-    `git clone git@github.com:AA-ALERT/psrdada-python.git`
+    `git clone git@github.com:TRASAL/psrdada-python.git`
 change into the top-level directory  
     `cd psrdada-python`  
 install the dependencies (in a virtual env)
