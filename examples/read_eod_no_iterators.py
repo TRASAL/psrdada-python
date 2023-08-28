@@ -8,7 +8,7 @@ import numpy as np
 
 from psrdada import Reader
 
-reader = Reader(0xdbda)
+reader = Reader(0xdada)
 
 nheader = 0
 while True:

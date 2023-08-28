@@ -5,7 +5,7 @@ Monitor statistics of a ringbuffer
 from psrdada import Viewer
 import time
 
-viewer = Viewer(0xdbda)
+viewer = Viewer(0xdada)
 
 print("HEADER               Data")
 print("FRE FUL CLR  W  R    FRE FUL CLR     W     R")
