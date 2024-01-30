@@ -47,7 +47,7 @@ clone the repository
 change into the top-level directory  
     `cd psrdada-python`  
 install the dependencies (in a virtual env)
-    `python -m venv env && . env/bin/activate && pip install -f requirements.txt`
+    `python -m venv env && . env/bin/activate && pip install -r requirements.txt`
 build the package
     `make && make test && make install`
 
