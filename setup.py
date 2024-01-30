@@ -36,7 +36,7 @@ if "CFLAGS" in environ:
             INCLUDE_DIRS.append(flag[2:-1])
 
 # keep the original order
-INCLUDE_DIRS.reverse() 
+INCLUDE_DIRS.reverse()
 
 # Get the header locations from the environment
 LIBRARY_DIRS = []
@@ -47,12 +47,12 @@ if "LD_LIBRARY_PATH" in environ:
         LIBRARY_DIRS.append(flag)
 
     # keep the original order
-    LIBRARY_DIRS.reverse() 
+    LIBRARY_DIRS.reverse()
 
 EXTENSIONS = [
     Extension(
         "psrdada.ringbuffer",
-        ["psrdada/ringbuffer.pyx"], 
+        ["psrdada/ringbuffer.pyx"],
         libraries=["psrdada"],
         library_dirs=LIBRARY_DIRS,
         include_dirs=INCLUDE_DIRS
@@ -103,6 +103,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.12',
     ],
     test_suite='tests',
     ext_modules=cythonize(EXTENSIONS),
