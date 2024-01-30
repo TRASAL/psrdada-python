@@ -4,12 +4,11 @@
 
 # following: http://cython.readthedocs.io/en/latest/src/tutorial/clibraries.html#defining-external-declarations
 
-ctypedef unsigned long int uint64_t
+cdef extern from "stdint.h":
+    ctypedef unsigned long int uint64_t
 
-#cdef extern from "<sys/types.h>":
-#    ctypedef struct key_t:
-#        pass
-ctypedef unsigned long key_t
+cdef extern from "<sys/ipc.h>":
+    ctypedef unsigned long key_t
 
 cdef extern from "multilog.h":
     ctypedef struct multilog_t:
