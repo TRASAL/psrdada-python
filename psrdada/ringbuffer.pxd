@@ -1,6 +1,6 @@
 # file: ringbuffer.pxd
 
-cimport dada_hdu
+from . cimport dada_hdu
 
 cdef class Ringbuffer:
     cdef dada_hdu.key_t _key

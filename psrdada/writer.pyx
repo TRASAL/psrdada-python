@@ -13,7 +13,7 @@ Create a new reader instance, and connect it directly to a running ringbuffer::
 """
 
 from cpython.buffer cimport PyBUF_WRITE
-cimport dada_hdu
+from . cimport dada_hdu
 from .ringbuffer cimport Ringbuffer
 
 from .exceptions import PSRDadaError

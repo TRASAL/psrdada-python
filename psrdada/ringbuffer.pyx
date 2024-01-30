@@ -1,6 +1,6 @@
 # file: ringbuffer.pyx
 
-cimport dada_hdu
+from . cimport dada_hdu
 
 from .exceptions import PSRDadaError
 

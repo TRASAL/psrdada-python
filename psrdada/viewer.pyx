@@ -13,7 +13,7 @@ Create a new viewe instance, and connect it directly to a running ringbuffer::
     viewer = Viewer(0xdada)
 
 """
-cimport dada_hdu
+from . cimport dada_hdu
 from .ringbuffer cimport Ringbuffer
 
 from .exceptions import PSRDadaError
