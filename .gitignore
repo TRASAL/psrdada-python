@@ -3,3 +3,5 @@ psrdada/*.c
 psrdada/*.so
 dirs
 docs/_build/*
+build/*
+env/*
